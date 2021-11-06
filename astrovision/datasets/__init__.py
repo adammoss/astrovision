@@ -1,5 +1,5 @@
-from .strong_lensing_challenge import SpaceBasedChallenge1
+from .strong_lensing_challenge import LensChallengeSpace1
 
 __all__ = (
-    "SpaceBasedChallenge1",
+    "LensChallengeSpace1",
 )
