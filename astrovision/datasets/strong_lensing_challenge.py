@@ -36,15 +36,16 @@ class LensChallengeSpace1(VisionDataset):
     ]
     meta = {
     }
-    target_class  = "is_lens"
+    target_class = "is_lens"
 
     def __init__(
-        self,
-        root: str,
-        train: bool = True,
-        transform: Optional[Callable] = None,
-        target_transform: Optional[Callable] = None,
-        download: bool = False,
+            self,
+            root: str,
+            train: bool = True,
+            transform: Optional[Callable] = None,
+            target_transform: Optional[Callable] = None,
+            pair_transform: Optional[Callable] = None,
+            download: bool = False,
     ) -> None:
 
         super().__init__(root, transform=transform, target_transform=target_transform)
@@ -75,6 +76,8 @@ class LensChallengeSpace1(VisionDataset):
 
         self.data = np.vstack(self.data).reshape(-1, 101, 101)
 
+        self.pair_transform = pair_transform
+
     def __getitem__(self, index: int) -> Tuple[Any, Any]:
         """
         Args:
@@ -86,6 +89,10 @@ class LensChallengeSpace1(VisionDataset):
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
+        if self.pair_transform is not None:
+            pair_img = Image.fromarray(img)
+            pair_img = self.pair_transform(pair_img)
+
         img = Image.fromarray(img)
 
         if self.transform is not None:
@@ -94,7 +101,10 @@ class LensChallengeSpace1(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return img, target
+        if self.pair_transform is not None:
+            return img, pair_img, target
+        else:
+            return img, target
 
     def __len__(self) -> int:
         return len(self.data)
