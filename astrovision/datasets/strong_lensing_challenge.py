@@ -102,7 +102,7 @@ class LensChallengeSpace1(VisionDataset):
             target = self.target_transform(target)
 
         if self.pair_transform is not None:
-            return img, pair_img, target
+            return (img, pair_img), target
         else:
             return img, target
 
